@@ -635,7 +635,7 @@ def rnn(step_function, inputs, initial_states,
             successive_states = []
             states = initial_states
             for i in indices:
-                output, states = step_function(inputs[i], states)
+                output, states = step_function(inputs[i], states + constants)
                 successive_outputs.append(output)
                 successive_states.append(states)
             outputs = T.stack(*successive_outputs)
@@ -663,7 +663,8 @@ def rnn(step_function, inputs, initial_states,
                 outputs = results
                 states = []
 
-    outputs = T.squeeze(outputs)
+    if input_length > 1:
+        outputs = T.squeeze(outputs)
     last_output = outputs[-1]
 
     axes = [1, 0] + list(range(2, outputs.ndim))
